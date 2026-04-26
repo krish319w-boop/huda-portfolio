@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>تواصل | هدى حسين</title><link rel="stylesheet" href="style.css"></head><body>
+<header><div class="logo">هدى حسين</div><nav><a href="index.html">الرئيسية</a><a href="projects.html">المشاريع</a><a href="contact.html">تواصل</a></nav></header>
+<section><div class="contact-box"><h1>تواصلي معنا</h1><p class="section-desc">املئي البيانات وسيتم إرسال الرسالة إلى Gmail بعد ضبط EmailJS.</p><div id="msg" class="msg"></div><input id="name" placeholder="الاسم"><input id="email" placeholder="الإيميل أو رقم الهاتف"><textarea id="message" placeholder="اكتبي رسالتك"></textarea><button class="btn" onclick="sendMail()">إرسال الرسالة</button></div></section>
+<footer>© 2026 هدى حسين</footer>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+/* ضعي بيانات EmailJS هنا */
+const EMAILJS_PUBLIC_KEY="PUT_PUBLIC_KEY_HERE";
+const EMAILJS_SERVICE_ID="PUT_SERVICE_ID_HERE";
+const EMAILJS_TEMPLATE_ID="PUT_TEMPLATE_ID_HERE";
+emailjs.init(EMAILJS_PUBLIC_KEY);
+function show(t,bad=false){msg.textContent=t;msg.className="msg "+(bad?"bad":"ok");msg.style.display="block"}
+function sendMail(){if(EMAILJS_PUBLIC_KEY.includes("PUT_")){show("لازم تضبطي EmailJS الأول داخل contact.html",true);return}
+const params={from_name:name.value,from_email:email.value,message:message.value,to_email:"YOUR_GMAIL_HERE"};
+emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,params).then(()=>show("تم إرسال الرسالة بنجاح")).catch(e=>{console.error(e);show("حدث خطأ في الإرسال",true)})}
+</script></body></html>
