@@ -1,43 +1,155 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>هدى حسين | كتالوج المشاريع</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f7f2ec;color:#2d241f}a{text-decoration:none;color:inherit}
-header{padding:18px 8%;display:flex;justify-content:space-between;align-items:center;background:white;position:sticky;top:0;z-index:10;box-shadow:0 6px 24px #0001}
-.logo{font-size:24px;font-weight:bold}.btn{background:#9a6a45;color:white;padding:12px 24px;border-radius:999px;display:inline-block;border:0}
-nav a{margin:0 10px;color:#6d5c52}.hero{padding:80px 8%;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
-.hero h1{font-size:54px;line-height:1.2;margin:0}.hero p{font-size:18px;line-height:1.9;color:#6d5c52}.hero img{width:100%;height:520px;object-fit:cover;border-radius:42px;box-shadow:0 20px 60px #0002}
-section{padding:70px 8%}.section-title{font-size:42px;margin:0 0 12px}.section-desc{color:#6d5c52;line-height:1.8;margin-bottom:35px}
-.projects{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}.project{background:white;border-radius:30px;overflow:hidden;box-shadow:0 10px 28px #0001}
-.project img{width:100%;height:290px;object-fit:cover}.project-content{padding:22px}.tag{color:#9a6a45;font-weight:bold;font-size:14px;margin-bottom:8px}
-.project h3{font-size:24px;margin:0 0 12px}.project p{color:#6d5c52;line-height:1.8}.details{color:#6d5c52;font-size:14px;line-height:1.9}
-.about,.contact{border-radius:42px;padding:45px;line-height:2;font-size:18px}.about{background:#2d241f;color:white}.contact{background:white;box-shadow:0 8px 24px #0001}
-footer{text-align:center;padding:28px;color:#6d5c52}.empty{background:white;border-radius:25px;padding:30px;text-align:center;color:#6d5c52}
-@media(max-width:900px){nav{display:none}.hero,.projects{grid-template-columns:1fr}.hero h1{font-size:38px}.hero img{height:360px}}
+body{font-family:Tahoma;background:#f7f2ec;margin:0;padding:20px}
+.container{max-width:800px;margin:auto;background:#fff;padding:20px;border-radius:20px}
+input,textarea,select{width:100%;padding:10px;margin:10px 0;border-radius:10px;border:1px solid #ccc}
+button{padding:10px 20px;background:#8b5e3c;color:#fff;border:none;border-radius:20px;cursor:pointer}
+.project{background:#fff;border:1px solid #ddd;margin-top:10px;padding:10px;border-radius:10px}
+img{width:100%;height:200px;object-fit:cover}
 </style>
-</head>
-<body>
-<header><div class="logo">هدى حسين</div><nav><a href="#projects">المشاريع</a><a href="#about">عن هدى</a><a href="#contact">تواصل</a><a href="admin.html">Admin</a></nav><a class="btn" href="https://wa.me/200000000000" target="_blank">واتساب</a></header>
-<section class="hero"><div><h1>كتالوج مشاريع ديكور بتصميم عصري</h1><p>موقع لعرض مشاريع هدى حسين: شركات، شقق مودرن، شقق كلاسيك، فيلات.</p><a class="btn" href="#projects">شاهدي المشاريع</a></div><img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1400&auto=format&fit=crop"></section>
-<section id="projects"><h2 class="section-title">كتالوج المشاريع</h2><p class="section-desc">المشاريع المضافة من لوحة التحكم تظهر هنا تلقائيًا.</p><div class="projects" id="projectsGrid"></div></section>
-<section id="about"><div class="about"><h2>عن هدى حسين</h2><p>مهندسة ديكور متخصصة في تصميم المساحات الداخلية بأسلوب يجمع بين الجمال والوظيفة.</p></div></section>
-<section id="contact"><div class="contact"><h2>تواصلي معي</h2><p>واتساب: <a href="https://wa.me/200000000000" target="_blank">+20 000 000 0000</a></p><p>الإيميل: hello@hudahussein.com</p></div></section>
-<footer>© 2026 هدى حسين - جميع الحقوق محفوظة</footer>
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="firebase.js"></script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>تسجيل الدخول</h2>
+
+<input id="email" placeholder="الإيميل">
+<input id="password" type="password" placeholder="الباسورد">
+
+<button onclick="login()">دخول</button>
+<button onclick="signup()">إنشاء حساب</button>
+
+<hr>
+
+<h2>إضافة مشروع</h2>
+
+<input id="title" placeholder="اسم المشروع">
+<select id="category">
+<option>شقة مودرن</option>
+<option>شقة كلاسيك</option>
+<option>مشروع تجاري</option>
+</select>
+
+<textarea id="description" placeholder="الوصف"></textarea>
+<input id="imageUrl" placeholder="رابط الصورة">
+<input id="projectLocation" placeholder="الموقع">
+<input id="year" placeholder="السنة">
+<input id="area" placeholder="المساحة">
+
+<button onclick="addProject()">إضافة المشروع</button>
+
+<h2>المشاريع</h2>
+<div id="projects"></div>
+
+</div>
+
 <script>
-const grid=document.getElementById("projectsGrid");
-db.collection("projects").orderBy("createdAt","desc").onSnapshot(snapshot=>{
- grid.innerHTML="";
- if(snapshot.empty){grid.innerHTML='<div class="empty">لسه مفيش مشاريع. ضيفي مشروع من لوحة التحكم.</div>';return;}
- snapshot.forEach(doc=>{
-  const p=doc.data();
-  grid.innerHTML+=`<article class="project"><img src="${p.imageUrl}" alt="${p.title}"><div class="project-content"><div class="tag">${p.category||"مشروع ديكور"}</div><h3>${p.title}</h3><p>${p.description}</p><div class="details"><div>الموقع: ${p.location||"-"}</div><div>السنة: ${p.year||"-"}</div><div>المساحة: ${p.area||"-"}</div></div></div></article>`;
- });
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCTUb72QTPGr2yzrJCFgJNBWSI2D9gt_Q8",
+  authDomain: "hoda-portflio.firebaseapp.com",
+  projectId: "hoda-portflio",
+  storageBucket: "hoda-portflio.firebasestorage.app",
+  messagingSenderId: "881971239680",
+  appId: "1:881971239680:web:770569ab484b92977a31e5"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+function login(){
+  auth.signInWithEmailAndPassword(email.value, password.value)
+  .catch(e => alert(e.message));
+}
+
+function signup(){
+  auth.createUserWithEmailAndPassword(email.value, password.value)
+  .then(()=> alert("تم إنشاء الحساب"))
+  .catch(e => alert(e.message));
+}
+
+async function addProject(){
+
+  const titleValue = document.getElementById("title").value;
+  const categoryValue = document.getElementById("category").value;
+  const descriptionValue = document.getElementById("description").value;
+  const imageUrlValue = document.getElementById("imageUrl").value;
+  const locationValue = document.getElementById("projectLocation").value;
+  const yearValue = document.getElementById("year").value;
+  const areaValue = document.getElementById("area").value;
+
+  if(!titleValue || !descriptionValue || !imageUrlValue){
+    alert("اكتبي البيانات الأساسية");
+    return;
+  }
+
+  await db.collection("projects").add({
+    title: titleValue,
+    category: categoryValue,
+    description: descriptionValue,
+    imageUrl: imageUrlValue,
+    location: locationValue || "",
+    year: yearValue || "",
+    area: areaValue || "",
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  alert("تم إضافة المشروع");
+
+}
+
+function loadProjects(){
+  db.collection("projects").orderBy("createdAt","desc")
+  .onSnapshot(snapshot => {
+
+    projects.innerHTML = "";
+
+    snapshot.forEach(doc => {
+
+      const p = doc.data();
+
+      projects.innerHTML += `
+        <div class="project">
+          <img src="${p.imageUrl}">
+          <h3>${p.title}</h3>
+          <p>${p.description}</p>
+          <button onclick="deleteProject('${doc.id}')">حذف</button>
+        </div>
+      `;
+    });
+
+  });
+}
+
+function deleteProject(id){
+  if(confirm("حذف المشروع؟")){
+    db.collection("projects").doc(id).delete();
+  }
+}
+
+auth.onAuthStateChanged(user=>{
+  if(user){
+    loadProjects();
+  }
 });
+
 </script>
+
 </body>
 </html>
